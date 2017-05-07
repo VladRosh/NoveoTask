@@ -175,7 +175,6 @@ class FrontViewController: UIViewController, UISearchControllerDelegate, UISearc
     var webModalNC: UINavigationController?
     
     // MARK: - Navigation
-    
     func revealController(_ revealController: SWRevealViewController!, willMoveTo position: FrontViewPosition) {
         if revealViewController().frontViewPosition != FrontViewPosition.left {
             reloadChannels()
