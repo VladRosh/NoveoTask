@@ -7,7 +7,7 @@ import AlamofireImage
 import MWFeedParser
 import DZNWebViewController
 
-class FrontViewController: UIViewController, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate, MWFeedParserDelegate, SWRevealViewControllerDelegate {
+class FrontViewController: UIViewController, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate,  MWFeedParserDelegate, SWRevealViewControllerDelegate {
     
     @IBOutlet weak var noRSSView: UIView!
     @IBOutlet weak var tableView: UITableView!
@@ -73,6 +73,7 @@ class FrontViewController: UIViewController, UISearchControllerDelegate, UISearc
         parsedItems.append(item)
     }
     func feedParser(_ parser: MWFeedParser!, didFailWithError error: Error!) {
+        
         let code = (error as NSError).code
         if code == 2 {
             let alert = UIAlertController(title: "Error", message: "No network", preferredStyle: UIAlertControllerStyle.alert)
@@ -171,13 +172,66 @@ class FrontViewController: UIViewController, UISearchControllerDelegate, UISearc
         filterContentForSearchText(searchController.searchBar.text!)
     }
     
-    //MARK: - TABLE VIEW DELEGATE
+    var webModalNC: UINavigationController?
+    
+    // MARK: - Navigation
+    
+    func revealController(_ revealController: SWRevealViewController!, willMoveTo position: FrontViewPosition) {
+        if revealViewController().frontViewPosition != FrontViewPosition.left {
+            reloadChannels()
+        }
+        
+    }
+
+    @IBAction func reloadData(_ sender: AnyObject) {
+        reloadChannels()
+    }
+}
+
+extension FrontViewController: UITableViewDelegate {
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         if searchController.isActive && ( searchController.searchBar.text != "" ) {
             return filterdAllRssArray.count
         }
         return allRSSArray.count
     }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if searchController.isActive && searchController.searchBar.text != "" {
+            return filterdAllRssArray[section].rssName
+        }
+        return allRSSArray[section].rssName
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 90
+    }
+    
+
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let url = URL(string: allRSSArray[indexPath.section].rssFeeds[indexPath.row].link)
+        let WVC = DZNWebViewController(url: url)
+        webModalNC = UINavigationController(rootViewController: WVC!)
+        WVC?.supportedWebNavigationTools = DZNWebNavigationTools.all
+        WVC?.supportedWebActions = DZNsupportedWebActions.DZNWebActionAll
+        WVC?.showLoadingProgress = true
+        WVC?.allowHistory = true
+        WVC?.hideBarsWithGestures = true
+        let closeButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(FrontViewController.dismissWebView))
+        WVC?.navigationItem.rightBarButtonItem = closeButton
+        self.present(webModalNC!, animated: true, completion: nil)
+        
+    }
+    
+    func dismissWebView() {
+        webModalNC?.dismiss(animated: true, completion: nil)
+    }
+    
+}
+
+extension FrontViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if searchController.isActive && ( searchController.searchBar.text != "" ) {
@@ -187,6 +241,7 @@ class FrontViewController: UIViewController, UISearchControllerDelegate, UISearc
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "FrontViewCell") as! TableViewCell
         var item = MWFeedItem()
         if searchController.isActive && searchController.searchBar.text != "" {
@@ -211,6 +266,7 @@ class FrontViewController: UIViewController, UISearchControllerDelegate, UISearc
                 }
                 
             }
+            
             if imageSource != "" {
                 cell.icon.af_setImage(withURL: URL(string: imageSource)!)
             } else {
@@ -219,51 +275,5 @@ class FrontViewController: UIViewController, UISearchControllerDelegate, UISearc
         }
         return cell
     }
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if searchController.isActive && searchController.searchBar.text != "" {
-            return filterdAllRssArray[section].rssName
-        }
-        return allRSSArray[section].rssName
-    }
-  
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 90
-    }
-    
-    var webModalNC: UINavigationController?
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let url = URL(string: allRSSArray[indexPath.section].rssFeeds[indexPath.row].link)
-        let WVC = DZNWebViewController(url: url)
-        webModalNC = UINavigationController(rootViewController: WVC!)
-        WVC?.supportedWebNavigationTools = DZNWebNavigationTools.all
-        WVC?.supportedWebActions = DZNsupportedWebActions.DZNWebActionAll
-        WVC?.showLoadingProgress = true
-        WVC?.allowHistory = true
-        WVC?.hideBarsWithGestures = true
-        let closeButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(FrontViewController.dismissWebView))
-        WVC?.navigationItem.rightBarButtonItem = closeButton
-        self.present(webModalNC!, animated: true, completion: nil)
-        
-    }
-    
-    // MARK: - Navigation
-    
-    func revealController(_ revealController: SWRevealViewController!, willMoveTo position: FrontViewPosition) {
-        if revealViewController().frontViewPosition != FrontViewPosition.left {
-            reloadChannels()
-        }
-        
-    }
-
-    func dismissWebView() {
-        webModalNC?.dismiss(animated: true, completion: nil)
-    }
-    
-    @IBAction func reloadData(_ sender: AnyObject) {
-        reloadChannels()
-    }
-
 
 }
-
-

@@ -92,13 +92,12 @@
 				F5555BDE1E9BC23F004AA019 /* AppDelegate.swift */,
 				523874AB1CF49925007FCB1A /* Main.storyboard */,
 				523874B11CF49925007FCB1A /* Assets.xcassets */,
-				523874C31CF4A6B7007FCB1A /* FrontViewController.swift */,
-				523874C51CF4A6CF007FCB1A /* MenuTableViewController.swift */,
-				523874C71CF57072007FCB1A /* CustomNavigationViewController.swift */,
-				523874C91CF58093007FCB1A /* TableViewCell.swift */,
+				F533ABA31EBF92AF00646851 /* Feeds */,
+				F533ABA21EBF8F1000646851 /* Cells */,
 				52D3D3761D1EF17E009107C9 /* Info.plist */,
-				521DD33F1D2BA8E1001D0840 /* AIManager.swift */,
+				F533ABA41EBF92B800646851 /* Activity Indicator */,
 				523874BD1CF49CA2007FCB1A /* TestTask-Bridging-Header.h */,
+				523874C71CF57072007FCB1A /* CustomNavigationViewController.swift */,
 				523874B31CF49925007FCB1A /* LaunchScreen.storyboard */,
 				52D3D3781D1EF1AA009107C9 /* TestTask.xcdatamodeld */,
 			);
@@ -129,6 +128,31 @@
 				2043A63399B52D696CB97A9A /* Pods-TestTask.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		F533ABA21EBF8F1000646851 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				523874C91CF58093007FCB1A /* TableViewCell.swift */,
+			);
+			name = Cells;
+			sourceTree = "<group>";
+		};
+		F533ABA31EBF92AF00646851 /* Feeds */ = {
+			isa = PBXGroup;
+			children = (
+				523874C31CF4A6B7007FCB1A /* FrontViewController.swift */,
+				523874C51CF4A6CF007FCB1A /* MenuTableViewController.swift */,
+			);
+			name = Feeds;
+			sourceTree = "<group>";
+		};
+		F533ABA41EBF92B800646851 /* Activity Indicator */ = {
+			isa = PBXGroup;
+			children = (
+				521DD33F1D2BA8E1001D0840 /* AIManager.swift */,
+			);
+			name = "Activity Indicator";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
